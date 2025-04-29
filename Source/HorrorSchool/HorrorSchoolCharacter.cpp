@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -34,10 +35,12 @@ AHorrorSchoolCharacter::AHorrorSchoolCharacter()
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
 
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
+
 
 void AHorrorSchoolCharacter::NotifyControllerChanged()
 {
@@ -58,9 +61,9 @@ void AHorrorSchoolCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		// Moving
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AHorrorSchoolCharacter::Sprint);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AHorrorSchoolCharacter::StopSprint);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AHorrorSchoolCharacter::Move);
@@ -99,4 +102,14 @@ void AHorrorSchoolCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void AHorrorSchoolCharacter::Sprint()
+{
+	GetCharacterMovement()->MaxWalkSpeed = runSpeed;
+}
+
+void AHorrorSchoolCharacter::StopSprint()
+{
+	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
 }
