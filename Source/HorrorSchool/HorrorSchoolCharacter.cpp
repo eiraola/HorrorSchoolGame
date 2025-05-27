@@ -11,6 +11,8 @@
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 

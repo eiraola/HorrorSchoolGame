@@ -56,6 +56,7 @@ class AHorrorSchoolCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float runSpeed;
+
 	
 public:
 	AHorrorSchoolCharacter();
@@ -84,6 +85,9 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	class USoundBase* StepSound;
 
 };
 
