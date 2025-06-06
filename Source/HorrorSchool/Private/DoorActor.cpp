@@ -57,16 +57,22 @@ void ADoorActor::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 		UGameplayStatics::PlaySoundAtLocation(this, OpenDoorSound, GetActorLocation());
 	}
 	bIsReseted = false;
-	DoorCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	DoorCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
-	MoveDoor();
+	CloseDoor();
 }
 
 void ADoorActor::ResetDoor()
 {
 	bIsReseted = true;
-	DoorStaticMesh->SetRelativeLocation(DoorBeginPositionGizmo->GetRelativeLocation());
-	DoorCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+}
+
+void ADoorActor::EnableDoorCollisions()
+{
+	DoorCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+}
+
+void ADoorActor::DisableDoorCollisions()
+{
+	DoorCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 }
 
 

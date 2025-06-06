@@ -21,10 +21,16 @@ protected:
 	UFUNCTION()
 	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION(BlueprintImplementableEvent)
-	void MoveDoor();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void OpenDoor();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void CloseDoor();
 	UFUNCTION(BlueprintCallable)
 	void ResetDoor();
+	UFUNCTION(BlueprintCallable)
+	void EnableDoorCollisions();
+	UFUNCTION(BlueprintCallable)
+	void DisableDoorCollisions();
 
 public:	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
