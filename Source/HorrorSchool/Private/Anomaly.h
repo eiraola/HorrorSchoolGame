@@ -23,6 +23,10 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere, Category = "Steps")
 	TArray<class AStep*> Steps;
+	UPROPERTY(EditAnywhere, Category = "Steps")
+	class APostProcessController* PostProcessControler;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	USoundBase* GlitchSound;
 	int CurrentStepIndex;
 	AStep* GetNextStep();
 	void ResetAnomaly();

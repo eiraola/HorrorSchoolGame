@@ -60,6 +60,7 @@ void ADoorActor::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	CloseDoor();
 }
 
+
 void ADoorActor::ResetDoor()
 {
 	bIsReseted = true;

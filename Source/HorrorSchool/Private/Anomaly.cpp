@@ -3,6 +3,8 @@
 
 #include "Anomaly.h"
 #include "Step.h"
+#include "Kismet/GameplayStatics.h"
+#include "PostProcessController.h"
 // Sets default values
 AAnomaly::AAnomaly()
 {
@@ -17,7 +19,11 @@ void AAnomaly::BeginPlay()
 {
 	Super::BeginPlay();
 	CurrentStepIndex = 0;
-	CurrentStep = Steps[CurrentStepIndex];
+	if (Steps.IsValidIndex(CurrentStepIndex))
+	{
+		CurrentStep = Steps[CurrentStepIndex];
+	}
+	
 }
 
 AStep* AAnomaly::GetNextStep()
@@ -60,6 +66,13 @@ void AAnomaly::StartAnomaly()
 
 void AAnomaly::CompleteAnomaly()
 {
+	if (GlitchSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, GlitchSound, GetActorLocation());
+	}
+	if (PostProcessControler) {
+		PostProcessControler->PlayDistorsionEffect();
+	}
 	ResetAnomaly();
 	UE_LOG(LogTemp, Warning, TEXT("AnomalyFinished"));
 	OnAnomalyCompleted.Broadcast();

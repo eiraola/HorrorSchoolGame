@@ -24,7 +24,7 @@ protected:
 public:	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lights")
-	TArray<class ALightContainer*> PointLightComponents;
+	TArray<class ALightActor*> PointLightComponents;
 
 public:
 	UFUNCTION()

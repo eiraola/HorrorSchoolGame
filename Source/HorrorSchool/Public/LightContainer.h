@@ -18,8 +18,10 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UPointLightComponent> LightComponent;
 	UPROPERTY(BlueprintReadWrite)
-	class UPointLightComponent* LightComponent;
+	class USceneComponent* SceneRoot;
 
 
 public:	

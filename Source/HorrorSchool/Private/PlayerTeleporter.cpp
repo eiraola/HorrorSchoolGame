@@ -5,6 +5,10 @@
 #include "Components/BoxComponent.h"
 #include "Components/SceneComponent.h"
 #include "Engine/Engine.h"
+#include "Sound/SoundBase.h"
+#include "Kismet/GameplayStatics.h"
+#include "Engine/PostProcessVolume.h"
+#include "PostProcessController.h"
 // Sets default values
 APlayerTeleporter::APlayerTeleporter()
 {
@@ -27,34 +31,41 @@ void APlayerTeleporter::BeginPlay()
 {
 	Super::BeginPlay();
     TriggerVolume->OnComponentBeginOverlap.AddDynamic(this ,&APlayerTeleporter::onVolumeBeginOverlap);
-    if (GEngine)
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("¡Hola desde C++!"));
-    }
-	
 }
 
 void APlayerTeleporter::onVolumeBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Actor %s ha entrado al volumen"), *OtherActor->GetName());
-    // Obtener la posición y rotación relativa al TriggerVolume
+    if (TeleportGlitchSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, TeleportGlitchSound, GetActorLocation());
+    }
+    TeleportableActor = OtherActor;
+    DoGlitchAnimation();
+    GetWorld()->GetTimerManager().SetTimer(
+        TimerHandle,
+        this,
+        &APlayerTeleporter::DoTeleport,
+        0.3f,
+        false
+    );
+}
+
+void APlayerTeleporter::DoTeleport()
+{
     FTransform TriggerTransform = TriggerVolume->GetComponentTransform();
     FTransform AppearTransform = AppearVolume->GetComponentTransform();
 
-    FTransform ActorLocalTransform = OtherActor->GetActorTransform().GetRelativeTransform(TriggerTransform);
-
-    // Convertir esa posición y rotación al espacio del AppearVolume
+    FTransform ActorLocalTransform = TeleportableActor->GetActorTransform().GetRelativeTransform(TriggerTransform);
     FTransform TargetWorldTransform = ActorLocalTransform * AppearTransform;
 
-    // Teletransportar al actor
-    OtherActor->SetActorLocationAndRotation(
+
+    TeleportableActor->SetActorLocationAndRotation(
         TargetWorldTransform.GetLocation(),
         TargetWorldTransform.GetRotation().Rotator()
     );
     FRotator TargetRotation = TargetWorldTransform.GetRotation().Rotator();
-    // Si es el jugador, cambia la rotación del controlador
 
-    APawn* Pawn = Cast<APawn>(OtherActor);
+    APawn* Pawn = Cast<APawn>(TeleportableActor);
     if (Pawn && Pawn->IsPlayerControlled())
     {
         AController* Controller = Pawn->GetController();
@@ -64,8 +75,7 @@ void APlayerTeleporter::onVolumeBeginOverlap(UPrimitiveComponent* OverlappedComp
         }
     }
 
-    // Asegúrate también de rotar el cuerpo del actor por coherencia
-    OtherActor->SetActorRotation(TargetRotation);
+    TeleportableActor->SetActorRotation(TargetRotation);
     OnLoopFinished.Broadcast();
 }
 

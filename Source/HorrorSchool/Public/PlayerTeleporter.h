@@ -29,6 +29,19 @@ public:
 	UFUNCTION()
 	void onVolumeBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION(BlueprintImplementableEvent)
+	void DoGlitchAnimation();
+	UFUNCTION(BlueprintCallable)
+	void DoTeleport();
+public:
+
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnLoopFinished OnLoopFinished;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	USoundBase* TeleportGlitchSound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	class APostProcessController* PostProcessController;
+private:
+	AActor* TeleportableActor;
+	FTimerHandle TimerHandle;
 };

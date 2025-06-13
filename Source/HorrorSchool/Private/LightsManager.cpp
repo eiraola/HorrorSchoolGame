@@ -3,6 +3,7 @@
 
 #include "LightsManager.h"
 #include "LightContainer.h"
+#include "LightActor.h"
 // Sets default values
 ALightsManager::ALightsManager()
 {
@@ -23,11 +24,11 @@ void ALightsManager::BeginPlay()
 
 void ALightsManager::ChangeLightsColor(FLinearColor newColor)
 {
-    for (ALightContainer* Light : PointLightComponents)
+    for (ALightActor* Light : PointLightComponents)
     {
         if (Light)
         {
-            Light->ChangeLightColor(newColor);
+            Light->SetLightColor(newColor);
         }
     }
 }

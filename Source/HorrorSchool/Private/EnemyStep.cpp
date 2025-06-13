@@ -16,12 +16,12 @@ AEnemyStep::AEnemyStep()
 	RootComponent = RootPoint;
 	EncounterCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("EncounterCollision"));
 	EncounterCollision->SetupAttachment(RootComponent);
-	EncounterCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	EncounterCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	EncounterCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
 	EncounterCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	RunCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("RunCollision"));
 	RunCollision->SetupAttachment(RootComponent);
-	RunCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	RunCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	RunCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
 	RunCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
@@ -37,13 +37,7 @@ AEnemyStep::AEnemyStep()
 void AEnemyStep::BeginPlay()
 {
 	Super::BeginPlay();
-	if (EnemyMonster) {
-		EnemyMonster->SetActorLocation(StartingPoint->GetComponentLocation());
-		EnemyMonster->SetTargetVector(EndingPoint->GetComponentLocation());
-		EnemyMonster->SetTargetSpeed(1000);
-	}
-	EncounterCollision->OnComponentBeginOverlap.AddDynamic(this, &AEnemyStep::OnEncounterCollisionBeginOverlap);
-	RunCollision->OnComponentBeginOverlap.AddDynamic(this, &AEnemyStep::OnRunCollisionBeginOverlap);
+	
 }
 
 // Called every frame
@@ -58,6 +52,13 @@ void AEnemyStep::StartStep()
 	EnemyMonster->Activate();
 	EncounterCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	RunCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	if (EnemyMonster) {
+		EnemyMonster->SetActorLocation(StartingPoint->GetComponentLocation());
+		EnemyMonster->SetTargetVector(EndingPoint->GetComponentLocation());
+		EnemyMonster->SetTargetSpeed(1000);
+	}
+	EncounterCollision->OnComponentBeginOverlap.AddDynamic(this, &AEnemyStep::OnEncounterCollisionBeginOverlap);
+	RunCollision->OnComponentBeginOverlap.AddDynamic(this, &AEnemyStep::OnRunCollisionBeginOverlap);
 }
 
 void AEnemyStep::EndStep()
@@ -68,6 +69,8 @@ void AEnemyStep::EndStep()
 	RunCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	OnStepCompleted.Broadcast();
 	UE_LOG(LogTemp, Warning, TEXT("Step finished"));
+	EncounterCollision->OnComponentBeginOverlap.RemoveDynamic(this, &AEnemyStep::OnEncounterCollisionBeginOverlap);
+	RunCollision->OnComponentBeginOverlap.RemoveDynamic(this, &AEnemyStep::OnRunCollisionBeginOverlap);
 }
 
 void AEnemyStep::OnEncounterCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

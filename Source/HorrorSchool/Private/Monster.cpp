@@ -83,5 +83,6 @@ void AMonster::Deactivate()
 	SetActorTickEnabled(false);
 	SetActorHiddenInGame(true);
 	SetActorLocation(FVector::ZeroVector);
+	bIsMoving = false;
 }
 
