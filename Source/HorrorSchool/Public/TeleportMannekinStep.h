@@ -30,9 +30,12 @@ protected:
 	virtual void BeginPlay() override;
 	void StartStep() override;
 	void EndStep() override;
+	void PlayFlickerAnim();
 	UFUNCTION()
 	void OnManequinColliderBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void TeleportMannequins();
 
 public:	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -44,6 +47,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<class AMannequin*> MannequinsToActivate;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class ALightsManager* LightsController;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ETeleportNumber TeleportNumber = ETeleportNumber::ET_First;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio")
+	UAudioComponent* AudioComponent;
+protected:
+	FTimerHandle TimerHandle;
 
 };

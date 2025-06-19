@@ -45,5 +45,16 @@ void AAnomalySelector::FinishAnomaly()
 	OnAnomalyFinished.Broadcast();
 }
 
+void AAnomalySelector::CancelCurrentAnomaly()
+{
+	if (!CurrentAnomaly) {
+		return;
+	}
+
+	CurrentAnomaly->CancelAnomaly();
+	CurrentAnomalyIndex = 0;
+	OnAnomalyCanceled.Broadcast();
+}
+
 
 

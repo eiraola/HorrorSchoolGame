@@ -30,4 +30,5 @@ public:
 	UFUNCTION()
 	void ChangeLightsColor(FLinearColor newColor);
 	void ResetLights();
+	void DoFlickerAnimation();
 };

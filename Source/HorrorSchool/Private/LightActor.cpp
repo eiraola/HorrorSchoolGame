@@ -6,6 +6,7 @@
 #include "Components/PointLightComponent.h"
 #include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/AudioComponent.h"
 // Sets default values
 ALightActor::ALightActor()
 {
@@ -17,6 +18,11 @@ ALightActor::ALightActor()
 	LightComponent->SetupAttachment(RootComponent);
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMesh->SetupAttachment(RootComponent);
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->SetupAttachment(RootComponent);
+	AudioComponent->bAutoActivate = true;
+	InitialIntensity = 1.0f;
+	InitialVolume = 1.0f;
 }
 
 // Called when the game starts or when spawned
@@ -24,6 +30,10 @@ void ALightActor::BeginPlay()
 {
 	Super::BeginPlay();
 	InitialColor = LightComponent->GetLightColor();
+	InitialIntensity = LightComponent->Intensity;
+    AudioComponent->Play();
+    InitialVolume = AudioComponent->VolumeMultiplier;
+	
 	
 }
 
@@ -47,5 +57,16 @@ FLinearColor ALightActor::GetLightColor()
 void ALightActor::ResetLightColor()
 {
 	LightComponent->SetLightColor(InitialColor);
+}
+
+void ALightActor::SetLightIntensity(float newIntensity)
+{
+	newIntensity = FMath::Clamp(newIntensity, 0.0f, 1.0f);
+	LightComponent->SetIntensity(InitialIntensity * newIntensity);
+}
+
+void ALightActor::SeAudioIntensity(float newIntensity)
+{
+	AudioComponent->SetVolumeMultiplier(InitialVolume * newIntensity);
 }
 

@@ -35,11 +35,19 @@ public:
 	USceneComponent* ThirdPosition;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USkeletalMeshComponent* Mesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UCapsuleComponent* EnemyCollider;
+	UPROPERTY(EditAnywhere, Category = "Spawning", meta = (MakeEditWidget))
+	FVector EnemySpawnLocation = FVector(0, 0, 100);
 	FVector InitialPos;
 	FRotator InitialRotation;
 
 public:
 	void Activate();
 	void Deactivate();
+protected:
+	UFUNCTION()
+	void OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 };

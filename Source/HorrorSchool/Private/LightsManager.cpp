@@ -38,3 +38,14 @@ void ALightsManager::ResetLights()
     ChangeLightsColor(InitialColor);
 }
 
+void ALightsManager::DoFlickerAnimation()
+{
+    for (ALightActor* Light : PointLightComponents)
+    {
+        if (Light)
+        {
+            Light->DoFlickerAnimation();
+        }
+    }
+}
+

@@ -64,6 +64,17 @@ void AAnomaly::StartAnomaly()
 	CurrentStep->StartStep();
 }
 
+void AAnomaly::CancelAnomaly()
+{
+	if (CurrentStep) {
+		CurrentStep->OnStepCompleted.RemoveDynamic(this, &AAnomaly::StepCompleted);
+	}
+	for (AStep* Step: Steps)
+	{
+		Step->EndStep();
+	}
+}
+
 void AAnomaly::CompleteAnomaly()
 {
 	if (GlitchSound)

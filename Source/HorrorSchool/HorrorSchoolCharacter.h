@@ -15,6 +15,7 @@ class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerDead);
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
@@ -61,6 +62,8 @@ class AHorrorSchoolCharacter : public ACharacter
 public:
 	AHorrorSchoolCharacter();
 
+	void BeginPlay() override;
+	void KillPlayer();
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -73,6 +76,12 @@ protected:
 
 	/* Called for stop sprinting */
 	void StopSprint();
+	UFUNCTION()
+	void PlayerDead();
+
+	void PlayerFadeIn();
+
+	void PlayerFadeOut();
 
 protected:
 	// APawn interface
@@ -88,6 +97,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
 	class USoundBase* StepSound;
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnPlayerDead OnPlayerDead;
+protected:
+	FTimerHandle DeathTimerHandle;
+	bool bPlayerIsDead;
+	FVector InitialPosition;
+	FRotator InitialRotation;
 
 };
 

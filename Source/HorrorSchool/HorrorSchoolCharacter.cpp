@@ -38,7 +38,16 @@ AHorrorSchoolCharacter::AHorrorSchoolCharacter()
 	Mesh1P->CastShadow = false;
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
+	bPlayerIsDead = false;
 
+}
+
+void AHorrorSchoolCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	PlayerFadeIn();
+	InitialPosition = GetActorLocation();
+	InitialRotation = GetActorRotation();
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -95,6 +104,10 @@ void AHorrorSchoolCharacter::Move(const FInputActionValue& Value)
 
 void AHorrorSchoolCharacter::Look(const FInputActionValue& Value)
 {
+	if (bPlayerIsDead) {
+		return;
+	}
+
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
@@ -114,4 +127,70 @@ void AHorrorSchoolCharacter::Sprint()
 void AHorrorSchoolCharacter::StopSprint()
 {
 	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
+}
+
+void AHorrorSchoolCharacter::PlayerDead()
+{
+	GetWorld()->GetTimerManager().ClearTimer(DeathTimerHandle);
+	OnPlayerDead.Broadcast();
+	bPlayerIsDead = false;
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	SetActorLocation(InitialPosition);
+	SetActorRotation(InitialRotation);
+	APlayerController* PC = Cast<APlayerController>(GetController());
+	if (PC)
+	{
+		PC->SetControlRotation(InitialRotation);  // Sincroniza la rotación del controlador
+	}
+	PlayerFadeIn();
+}
+
+void AHorrorSchoolCharacter::KillPlayer()
+{
+	if (bPlayerIsDead) {
+		return;
+	}
+
+	bPlayerIsDead = true;
+	GetCharacterMovement()->DisableMovement();
+	PlayerFadeOut();
+	GetWorld()->GetTimerManager().SetTimer(
+		DeathTimerHandle,
+		this,
+		&AHorrorSchoolCharacter::PlayerDead,
+		1.5f,
+		false
+	);
+}
+
+void AHorrorSchoolCharacter::PlayerFadeIn()
+{
+	APlayerController* PC = Cast<APlayerController>(GetController());
+	if (PC && PC->PlayerCameraManager)
+	{
+		PC->PlayerCameraManager->StartCameraFade(
+			1.0f,
+			0.0f,
+			1.0f,
+			FLinearColor::Black,
+			false,
+			true
+		);
+	}
+}
+
+void AHorrorSchoolCharacter::PlayerFadeOut()
+{
+	APlayerController* PC = Cast<APlayerController>(GetController());
+	if (PC && PC->PlayerCameraManager)
+	{
+		PC->PlayerCameraManager->StartCameraFade(
+			0.0f,
+			1.0f,
+			1.0f,
+			FLinearColor::Black,
+			false,
+			true
+		);
+	}
 }

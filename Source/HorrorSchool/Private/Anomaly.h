@@ -38,6 +38,7 @@ protected:
 public:
 	UFUNCTION()
 	void StartAnomaly();
+	void CancelAnomaly();
 	FOnAnomalyCompleted OnAnomalyCompleted;
 
 };

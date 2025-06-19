@@ -5,6 +5,8 @@
 #include "Components/BoxComponent.h"
 #include "Components/BoxComponent.h"
 #include "Mannequin.h"
+#include "LightsManager.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 ATeleportMannekinStep::ATeleportMannekinStep()
@@ -19,6 +21,9 @@ ATeleportMannekinStep::ATeleportMannekinStep()
 	ManequinTeleportCollider->SetCollisionResponseToAllChannels(ECR_Ignore);
 	ManequinTeleportCollider->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	ManequinTeleportCollider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->SetupAttachment(RootComponent);
+	AudioComponent->bAutoActivate = false;
 
 }
 
@@ -41,14 +46,14 @@ void ATeleportMannekinStep::StartStep()
 	{
 		if (Mannequin)
 		{
-			Mannequin->SetActorHiddenInGame(false);
+			Mannequin->Activate();
 		}
 	}
 }
 
 void ATeleportMannekinStep::EndStep()
 {
-
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	ManequinTeleportCollider->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	ManequinTeleportCollider->OnComponentBeginOverlap.RemoveDynamic(this, &ATeleportMannekinStep::OnManequinColliderBeginOverlap);
 	OnStepCompleted.Broadcast();
@@ -61,13 +66,35 @@ void ATeleportMannekinStep::EndStep()
 	{
 		if (Mannequin)
 		{
-			Mannequin->SetActorHiddenInGame(true);
+			Mannequin->Deactivate();
 		}
 	}
 }
 
+void ATeleportMannekinStep::PlayFlickerAnim()
+{
+	if (!LightsController) {
+		return;
+	}
+
+	LightsController->DoFlickerAnimation();
+}
+
 void ATeleportMannekinStep::OnManequinColliderBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	PlayFlickerAnim();
+	GetWorld()->GetTimerManager().SetTimer(
+		TimerHandle,
+		this,
+		&ATeleportMannekinStep::TeleportMannequins,
+		0.6f,
+		false
+	);
+}
+
+void ATeleportMannekinStep::TeleportMannequins()
+{
+	AudioComponent->Play();
 	for (AMannequin* Mannequin : Mannequins)
 	{
 		if (Mannequin)

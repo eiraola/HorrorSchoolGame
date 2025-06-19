@@ -7,6 +7,7 @@
 #include "AnomalySelector.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAnomalyFinished);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAnomalyCanceled);
 UCLASS()
 class HORRORSCHOOL_API AAnomalySelector : public AActor
 {
@@ -26,6 +27,7 @@ public:
 	void FinishAnomaly();
 	UFUNCTION(BlueprintImplementableEvent)
 	void OpenLevelDoor();
+	void CancelCurrentAnomaly();
 
 public: 
 	UPROPERTY(EditAnywhere, Category = "Anomalies")
@@ -33,6 +35,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnAnomalyFinished OnAnomalyFinished;
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnAnomalyCanceled OnAnomalyCanceled;
+
 private:
 	AAnomaly* CurrentAnomaly;
 	int CurrentAnomalyIndex;
