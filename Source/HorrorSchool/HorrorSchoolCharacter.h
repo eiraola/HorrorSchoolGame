@@ -64,6 +64,8 @@ public:
 
 	void BeginPlay() override;
 	void KillPlayer();
+	void SetStepSound();
+	void SetWetStepSound();
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -83,6 +85,7 @@ protected:
 
 	void PlayerFadeOut();
 
+
 protected:
 	// APawn interface
 	virtual void NotifyControllerChanged() override;
@@ -97,6 +100,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
 	class USoundBase* StepSound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	USoundBase* WetStepSound;
+	UPROPERTY( BlueprintReadWrite, Category = "Audio")
+	USoundBase* CurrentStepSound;
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnPlayerDead OnPlayerDead;
 protected:

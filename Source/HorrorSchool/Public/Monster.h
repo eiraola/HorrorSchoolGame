@@ -38,5 +38,17 @@ public:
 	void SetTargetSpeed(float targetSpeed);
 	void Activate();
 	void Deactivate();
+
 	FOnPositionReached OnPositionReached;
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* REye;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* LEye;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USkeletalMeshComponent* Body;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* Root;
 };

@@ -45,6 +45,7 @@ AHorrorSchoolCharacter::AHorrorSchoolCharacter()
 void AHorrorSchoolCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	SetStepSound();
 	PlayerFadeIn();
 	InitialPosition = GetActorLocation();
 	InitialRotation = GetActorRotation();
@@ -193,4 +194,14 @@ void AHorrorSchoolCharacter::PlayerFadeOut()
 			true
 		);
 	}
+}
+
+void AHorrorSchoolCharacter::SetStepSound()
+{
+	CurrentStepSound = StepSound;
+}
+
+void AHorrorSchoolCharacter::SetWetStepSound()
+{
+	CurrentStepSound = WetStepSound;
 }

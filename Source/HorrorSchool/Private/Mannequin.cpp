@@ -46,10 +46,7 @@ void AMannequin::BeginPlay()
 	Super::BeginPlay();
 	InitialPos = Mesh->GetRelativeLocation();
 	InitialRotation = Mesh->GetRelativeRotation();
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("¡AMannequin creado!"));
-	}
+	
 }
 
 void AMannequin::SetNextPosition()
@@ -82,11 +79,6 @@ void AMannequin::Activate()
 	Mesh->SetRelativeRotation(InitialRotation);
 	EnemyCollider->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	EnemyCollider->OnComponentBeginOverlap.AddDynamic(this, &AMannequin::OnCapsuleBeginOverlap);
-	UE_LOG(LogTemp, Warning, TEXT("Hay Collision"))
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("ZDDD"));
-		}
 }
 
 void AMannequin::Deactivate()
@@ -99,17 +91,14 @@ void AMannequin::Deactivate()
 
 void AMannequin::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Hay Collision"));
 	if (!OtherActor) {
 		return;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Hay Actor"));
 	AHorrorSchoolCharacter* PlayerCharacter = Cast<AHorrorSchoolCharacter>(OtherActor);
 
 	if (!PlayerCharacter) {
 		return;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Hay Player"));
 	PlayerCharacter->KillPlayer();
 }
 

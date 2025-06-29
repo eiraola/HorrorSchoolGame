@@ -24,6 +24,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Steps")
 	TArray<class AStep*> Steps;
 	UPROPERTY(EditAnywhere, Category = "Steps")
+	TArray<class AActor*> ActorsToActivate;
+	UPROPERTY(EditAnywhere, Category = "Steps")
+	class AMonster* Monster;
+	UPROPERTY(EditAnywhere, Category = "Steps", meta = (MakeEditWidget))
+	FVector MonsterInitPos = FVector(0, 0, 0);
+	UPROPERTY(EditAnywhere, Category = "Steps")
 	class APostProcessController* PostProcessControler;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
 	USoundBase* GlitchSound;
@@ -39,6 +45,8 @@ public:
 	UFUNCTION()
 	void StartAnomaly();
 	void CancelAnomaly();
+	void ActivateAnomalyItems();
+	void DeactivateAnomalyItems();
 	FOnAnomalyCompleted OnAnomalyCompleted;
 
 };

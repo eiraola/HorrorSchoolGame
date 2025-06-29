@@ -5,6 +5,7 @@
 #include "Step.h"
 #include "Kismet/GameplayStatics.h"
 #include "PostProcessController.h"
+#include "Monster.h"
 // Sets default values
 AAnomaly::AAnomaly()
 {
@@ -44,9 +45,10 @@ void AAnomaly::ResetAnomaly()
 
 void AAnomaly::StepCompleted()
 {
+	
 	CurrentStep->OnStepCompleted.RemoveDynamic(this, &AAnomaly::StepCompleted);
 	CurrentStep = GetNextStep();
-
+	UE_LOG(LogTemp, Warning, TEXT("StartStep ejecutado.El step es : %d"), CurrentStepIndex);
 	if (!CurrentStep) {
 		CompleteAnomaly();
 		return;
@@ -72,6 +74,29 @@ void AAnomaly::CancelAnomaly()
 	for (AStep* Step: Steps)
 	{
 		Step->EndStep();
+	}
+}
+
+void AAnomaly::ActivateAnomalyItems()
+{
+	if (Monster) {
+		Monster->Activate();
+		Monster->SetActorLocation(MonsterInitPos);
+	}
+
+	for (AActor* actor : ActorsToActivate) {
+		actor->SetActorHiddenInGame(false);
+	}
+}
+
+void AAnomaly::DeactivateAnomalyItems()
+{
+	if (Monster) {
+		Monster->Deactivate();
+	}
+
+	for (AActor* actor : ActorsToActivate) {
+		actor->SetActorHiddenInGame(true);
 	}
 }
 

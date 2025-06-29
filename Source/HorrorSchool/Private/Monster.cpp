@@ -4,6 +4,8 @@
 #include "Monster.h"
 
 #include "Engine/Engine.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Components/SceneComponent.h"
 // Sets default values
 AMonster::AMonster()
 {
@@ -12,6 +14,20 @@ AMonster::AMonster()
 	TargetSpeed = 0;
 	TargetPosition = FVector::ZeroVector;
 	bIsMoving = false;
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	Body = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Body"));
+	REye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("REye"));
+	LEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LEye"));
+	RootComponent = Root;
+	Body->SetupAttachment(RootComponent);
+
+	REye->SetupAttachment(Body);
+	LEye->SetupAttachment(Body);
+	REye->AttachToComponent(Body, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("LEyeSocket"));
+	LEye->AttachToComponent(Body, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("REyeSocket"));
+
+	
+	
 
 }
 
@@ -19,7 +35,15 @@ AMonster::AMonster()
 void AMonster::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if (Body->DoesSocketExist("LEyeSocket"))
+	{
+		REye->AttachToComponent(Body, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("LEyeSocket"));
+	}
+
+	if (Body->DoesSocketExist("REyeSocket"))
+	{
+		LEye->AttachToComponent(Body, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("REyeSocket"));
+	}
 }
 
 // Called every frame
@@ -62,9 +86,10 @@ void AMonster::StartMovement()
 
 void AMonster::StopMovement()
 {
-
-	OnPositionReached.Broadcast();
+	UE_LOG(LogTemp, Warning, TEXT("Paro"));
+	
 	bIsMoving = false;
+	OnPositionReached.Broadcast();
 }
 
 void AMonster::SetTargetSpeed(float targetSpeed)
