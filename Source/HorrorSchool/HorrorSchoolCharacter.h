@@ -58,6 +58,9 @@ class AHorrorSchoolCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float runSpeed;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* InteractAction;
+
 	
 public:
 	AHorrorSchoolCharacter();
@@ -66,6 +69,8 @@ public:
 	void KillPlayer();
 	void SetStepSound();
 	void SetWetStepSound();
+	void StartLookingInteractables();
+	void StopLookingInteractables();
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -78,13 +83,16 @@ protected:
 
 	/* Called for stop sprinting */
 	void StopSprint();
+	/* Called for sprint input*/
+	void Interact();
 	UFUNCTION()
 	void PlayerDead();
 
 	void PlayerFadeIn();
 
 	void PlayerFadeOut();
-
+	UFUNCTION()
+	void CheckInteractables();
 
 protected:
 	// APawn interface
@@ -108,9 +116,11 @@ public:
 	FOnPlayerDead OnPlayerDead;
 protected:
 	FTimerHandle DeathTimerHandle;
+	FTimerHandle LookForInteractableTimerHandle;
 	bool bPlayerIsDead;
 	FVector InitialPosition;
 	FRotator InitialRotation;
+	class AInteractable* CurrentInteractable;
 
 };
 

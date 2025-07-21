@@ -13,6 +13,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "Interactable.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -82,6 +83,7 @@ void AHorrorSchoolCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AHorrorSchoolCharacter::Look);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &AHorrorSchoolCharacter::Interact);
 	}
 	else
 	{
@@ -130,6 +132,15 @@ void AHorrorSchoolCharacter::StopSprint()
 	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
 }
 
+void AHorrorSchoolCharacter::Interact()
+{
+	if (!CurrentInteractable) {
+		return;
+	}
+
+	CurrentInteractable->Interact();
+}
+
 void AHorrorSchoolCharacter::PlayerDead()
 {
 	GetWorld()->GetTimerManager().ClearTimer(DeathTimerHandle);
@@ -141,7 +152,7 @@ void AHorrorSchoolCharacter::PlayerDead()
 	APlayerController* PC = Cast<APlayerController>(GetController());
 	if (PC)
 	{
-		PC->SetControlRotation(InitialRotation);  // Sincroniza la rotación del controlador
+		PC->SetControlRotation(InitialRotation);  
 	}
 	PlayerFadeIn();
 }
@@ -162,6 +173,7 @@ void AHorrorSchoolCharacter::KillPlayer()
 		1.5f,
 		false
 	);
+	StopLookingInteractables();
 }
 
 void AHorrorSchoolCharacter::PlayerFadeIn()
@@ -196,6 +208,39 @@ void AHorrorSchoolCharacter::PlayerFadeOut()
 	}
 }
 
+void AHorrorSchoolCharacter::CheckInteractables()
+{
+	FHitResult HitResult;
+	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
+	FVector End = Start + (FirstPersonCameraComponent->GetForwardVector() * 200.0f);
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		Start,
+		End,
+		ECC_Visibility,
+		Params
+	);
+
+	if (!bHit)
+	{
+		CurrentInteractable = nullptr;
+		return;
+	}
+
+	AInteractable* HittedInteractable = Cast<AInteractable>(HitResult.GetActor());
+
+	if (!HittedInteractable) {
+		CurrentInteractable = nullptr;
+		return;
+	}
+
+	CurrentInteractable = HittedInteractable;
+}
+
 void AHorrorSchoolCharacter::SetStepSound()
 {
 	CurrentStepSound = StepSound;
@@ -204,4 +249,21 @@ void AHorrorSchoolCharacter::SetStepSound()
 void AHorrorSchoolCharacter::SetWetStepSound()
 {
 	CurrentStepSound = WetStepSound;
+}
+
+void AHorrorSchoolCharacter::StartLookingInteractables()
+{
+	GetWorld()->GetTimerManager().SetTimer(
+		LookForInteractableTimerHandle,
+		this,
+		&AHorrorSchoolCharacter::CheckInteractables,
+		0.02,
+		true
+	);
+}
+
+void AHorrorSchoolCharacter::StopLookingInteractables()
+{
+	GetWorld()->GetTimerManager().ClearTimer(LookForInteractableTimerHandle);
+	CurrentInteractable = nullptr;
 }
