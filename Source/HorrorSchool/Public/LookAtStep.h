@@ -23,7 +23,9 @@ protected:
 	void LookingAt();
 
 public:	
+	UFUNCTION()
 	void StartStep() override;
+	UFUNCTION()
 	void EndStep() override;
 	void LoadObjects();
 	void UnloadObjects();

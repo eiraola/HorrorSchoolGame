@@ -18,5 +18,6 @@ public:
 	virtual void Activate() PURE_VIRTUAL(AInteractable::Activate, );
 	virtual void Deactivate() PURE_VIRTUAL(AInteractable::Deactivate, );
 	FOnInteractionFinished OnInteractionFinished;
+
 		
 };
