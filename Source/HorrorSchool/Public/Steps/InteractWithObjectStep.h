@@ -28,5 +28,6 @@ public:
 private:
 	AHorrorSchoolCharacter* PlayerCharacter;
 public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	AInteractable* InteractableObject;
 };

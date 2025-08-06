@@ -26,6 +26,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Steps")
 	TArray<class AActor*> ActorsToActivate;
 	UPROPERTY(EditAnywhere, Category = "Steps")
+	TArray<class AInteractable*> InteractablesToActivate;
+	UPROPERTY(EditAnywhere, Category = "Steps")
 	class AMonster* Monster;
 	UPROPERTY(EditAnywhere, Category = "Steps", meta = (MakeEditWidget))
 	FVector MonsterInitPos = FVector(0, 0, 0);

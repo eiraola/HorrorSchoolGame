@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "PostProcessController.h"
 #include "Monster.h"
+#include "Interactable.h"
 // Sets default values
 AAnomaly::AAnomaly()
 {
@@ -86,6 +87,11 @@ void AAnomaly::ActivateAnomalyItems()
 
 	for (AActor* actor : ActorsToActivate) {
 		actor->SetActorHiddenInGame(false);
+		actor->SetActorEnableCollision(true);
+	}
+
+	for (AInteractable* interactable : InteractablesToActivate) {
+		interactable->Activate();
 	}
 }
 
@@ -97,6 +103,11 @@ void AAnomaly::DeactivateAnomalyItems()
 
 	for (AActor* actor : ActorsToActivate) {
 		actor->SetActorHiddenInGame(true);
+		actor->SetActorEnableCollision(false);
+	}
+
+	for (AInteractable* interactable : InteractablesToActivate) {
+		interactable->Deactivate();
 	}
 }
 

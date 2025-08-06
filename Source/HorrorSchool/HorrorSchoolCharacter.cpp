@@ -210,6 +210,7 @@ void AHorrorSchoolCharacter::PlayerFadeOut()
 
 void AHorrorSchoolCharacter::CheckInteractables()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Buscando interactables!"));
 	FHitResult HitResult;
 	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
 	FVector End = Start + (FirstPersonCameraComponent->GetForwardVector() * 200.0f);
@@ -237,7 +238,11 @@ void AHorrorSchoolCharacter::CheckInteractables()
 		CurrentInteractable = nullptr;
 		return;
 	}
+	UE_LOG(LogTemp, Warning, TEXT("Encontrado interactables"));
 
+	if (CurrentInteractable == HittedInteractable) {
+		return;
+	}
 	CurrentInteractable = HittedInteractable;
 }
 

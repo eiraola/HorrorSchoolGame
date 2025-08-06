@@ -4,20 +4,18 @@
 #include "Steps/InteractWithObjectStep.h"
 #include "../HorrorSchoolCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Interactable.h"
 
 // Sets default values
 AInteractWithObjectStep::AInteractWithObjectStep()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 }
 
-// Called when the game starts or when spawned
 void AInteractWithObjectStep::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void AInteractWithObjectStep::StartStep()
@@ -28,11 +26,24 @@ void AInteractWithObjectStep::StartStep()
 	}
 
 	PlayerCharacter->StartLookingInteractables();
+
+	if (!InteractableObject) {
+		return;
+	}
+
+	InteractableObject->OnInteractionFinished.AddDynamic(this, &AInteractWithObjectStep::EndStep);
 	
 }
 
 void AInteractWithObjectStep::EndStep()
 {
+	if (!InteractableObject) {
+		return;
+	}
+
+	InteractableObject->OnInteractionFinished.RemoveDynamic(this, &AInteractWithObjectStep::EndStep);
+
+	OnStepCompleted.Broadcast();
 }
 
 
