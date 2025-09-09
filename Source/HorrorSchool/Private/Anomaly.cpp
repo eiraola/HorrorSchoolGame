@@ -42,6 +42,7 @@ void AAnomaly::ResetAnomaly()
 {
 	CurrentStepIndex = 0;
 	CurrentStep = Steps[CurrentStepIndex];
+	DeactivateAnomalyItems();
 }
 
 void AAnomaly::StepCompleted()
@@ -49,7 +50,6 @@ void AAnomaly::StepCompleted()
 	
 	CurrentStep->OnStepCompleted.RemoveDynamic(this, &AAnomaly::StepCompleted);
 	CurrentStep = GetNextStep();
-	UE_LOG(LogTemp, Warning, TEXT("StartStep ejecutado.El step es : %d"), CurrentStepIndex);
 	if (!CurrentStep) {
 		CompleteAnomaly();
 		return;
@@ -64,6 +64,7 @@ void AAnomaly::StartAnomaly()
 	CurrentStepIndex = 0;
 	CurrentStep = Steps[CurrentStepIndex];
 	CurrentStep->OnStepCompleted.AddDynamic(this, &AAnomaly::StepCompleted);
+	ActivateAnomalyItems();
 	CurrentStep->StartStep();
 }
 
@@ -72,6 +73,7 @@ void AAnomaly::CancelAnomaly()
 	if (CurrentStep) {
 		CurrentStep->OnStepCompleted.RemoveDynamic(this, &AAnomaly::StepCompleted);
 	}
+	DeactivateAnomalyItems();
 	for (AStep* Step: Steps)
 	{
 		Step->EndStep();

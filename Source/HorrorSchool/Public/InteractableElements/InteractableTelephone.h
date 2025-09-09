@@ -34,5 +34,12 @@ public:
 	UBoxComponent* Collision;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	USceneComponent* Root;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	USoundBase* RingSound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	USoundBase* TakePhoneSound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	UAudioComponent* AudioComp;
+	
 
 };

@@ -135,9 +135,10 @@ void AHorrorSchoolCharacter::StopSprint()
 void AHorrorSchoolCharacter::Interact()
 {
 	if (!CurrentInteractable) {
+		UE_LOG(LogTemp, Warning, TEXT("No hay interactable"));
 		return;
 	}
-
+	UE_LOG(LogTemp, Warning, TEXT("Interactuamos"));
 	CurrentInteractable->Interact();
 }
 
@@ -210,7 +211,6 @@ void AHorrorSchoolCharacter::PlayerFadeOut()
 
 void AHorrorSchoolCharacter::CheckInteractables()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Buscando interactables!"));
 	FHitResult HitResult;
 	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
 	FVector End = Start + (FirstPersonCameraComponent->GetForwardVector() * 200.0f);
@@ -222,7 +222,7 @@ void AHorrorSchoolCharacter::CheckInteractables()
 		HitResult,
 		Start,
 		End,
-		ECC_Visibility,
+		ECC_WorldStatic,
 		Params
 	);
 
@@ -238,7 +238,7 @@ void AHorrorSchoolCharacter::CheckInteractables()
 		CurrentInteractable = nullptr;
 		return;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Encontrado interactables"));
+	
 
 	if (CurrentInteractable == HittedInteractable) {
 		return;

@@ -18,6 +18,7 @@ void ATelephoneInteractable::BeginPlay()
 
 void ATelephoneInteractable::Interact()
 {
+	UE_LOG(LogTemp, Warning, TEXT("WOPS!!!!"));
 }
 
 void ATelephoneInteractable::Activate()

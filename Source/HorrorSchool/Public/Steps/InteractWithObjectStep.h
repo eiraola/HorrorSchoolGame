@@ -23,7 +23,9 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+	UFUNCTION()
 	virtual void StartStep() override;
+	UFUNCTION()
 	virtual void EndStep() override;
 private:
 	AHorrorSchoolCharacter* PlayerCharacter;
