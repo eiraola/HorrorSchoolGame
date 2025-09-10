@@ -40,6 +40,7 @@ void AInteractWithObjectStep::EndStep()
 	if (!InteractableObject) {
 		return;
 	}
+	PlayerCharacter->StopLookingInteractables();
 	UE_LOG(LogTemp, Warning, TEXT("Se detecta el fin de step"));
 	InteractableObject->OnInteractionFinished.RemoveDynamic(this, &AInteractWithObjectStep::EndStep);
 
