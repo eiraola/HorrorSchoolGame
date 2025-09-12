@@ -214,7 +214,6 @@ void AHorrorSchoolCharacter::CheckInteractables()
 	FHitResult HitResult;
 	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
 	FVector End = Start + (FirstPersonCameraComponent->GetForwardVector() * 200.0f);
-
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 
@@ -229,6 +228,7 @@ void AHorrorSchoolCharacter::CheckInteractables()
 	if (!bHit)
 	{
 		CurrentInteractable = nullptr;
+		OnInteractableDetected.Broadcast("");
 		return;
 	}
 
@@ -236,6 +236,7 @@ void AHorrorSchoolCharacter::CheckInteractables()
 
 	if (!HittedInteractable) {
 		CurrentInteractable = nullptr;
+		OnInteractableDetected.Broadcast("");
 		return;
 	}
 	
@@ -243,6 +244,7 @@ void AHorrorSchoolCharacter::CheckInteractables()
 	if (CurrentInteractable == HittedInteractable) {
 		return;
 	}
+	OnInteractableDetected.Broadcast(HittedInteractable->InteractableName);
 	CurrentInteractable = HittedInteractable;
 }
 
@@ -265,10 +267,13 @@ void AHorrorSchoolCharacter::StartLookingInteractables()
 		0.02,
 		true
 	);
+	OnInteractableChecking.Broadcast(true);
 }
 
 void AHorrorSchoolCharacter::StopLookingInteractables()
 {
 	GetWorld()->GetTimerManager().ClearTimer(LookForInteractableTimerHandle);
+	OnInteractableDetected.Broadcast("");
 	CurrentInteractable = nullptr;
+	OnInteractableChecking.Broadcast(false);
 }

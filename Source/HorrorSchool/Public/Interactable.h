@@ -14,6 +14,8 @@ class HORRORSCHOOL_API AInteractable : public AActor
 	GENERATED_BODY()
 
 public:	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString InteractableName;
 	virtual void Interact() PURE_VIRTUAL(AInteractable::Interact, );
 	virtual void Activate() PURE_VIRTUAL(AInteractable::Activate, );
 	virtual void Deactivate() PURE_VIRTUAL(AInteractable::Deactivate, );

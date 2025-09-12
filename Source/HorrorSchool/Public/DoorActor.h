@@ -31,6 +31,8 @@ protected:
 	void EnableDoorCollisions();
 	UFUNCTION(BlueprintCallable)
 	void DisableDoorCollisions();
+	UFUNCTION(BlueprintCallable)
+	void PlayDoorSound();
 
 public:	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")

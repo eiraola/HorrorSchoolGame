@@ -76,6 +76,14 @@ void ADoorActor::DisableDoorCollisions()
 	DoorCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 }
 
+void ADoorActor::PlayDoorSound()
+{
+	if (OpenDoorSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, OpenDoorSound, GetActorLocation());
+	}
+}
+
 
 
 

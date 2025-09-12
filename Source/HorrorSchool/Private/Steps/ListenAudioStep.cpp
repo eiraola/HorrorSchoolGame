@@ -31,6 +31,7 @@ void AListenAudioStep::StartStep()
 void AListenAudioStep::EndStep()
 {
 	CurrentAudio = 0;
+	AudioComp->OnAudioFinished.RemoveDynamic(this, &AListenAudioStep::OnAudioFinished);
 	OnStepCompleted.Broadcast();
 }
 

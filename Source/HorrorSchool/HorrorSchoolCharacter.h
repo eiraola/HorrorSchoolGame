@@ -16,6 +16,8 @@ class UInputMappingContext;
 struct FInputActionValue;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerDead);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractableDetected, const FString&, NewText);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractableChecking, const bool, isChecking);
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
@@ -114,6 +116,11 @@ public:
 	USoundBase* CurrentStepSound;
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnPlayerDead OnPlayerDead;
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnInteractableDetected OnInteractableDetected;
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnInteractableChecking OnInteractableChecking;
+
 protected:
 	FTimerHandle DeathTimerHandle;
 	FTimerHandle LookForInteractableTimerHandle;
